@@ -4,7 +4,7 @@ Donate link: https://example.com/
 Tags: shipping, uklon
 Requires at least: 4.7
 Tested up to: 5.4
-Stable tag: 1.1.2
+Stable tag: 1.1.3
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -16,6 +16,9 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Кастомний метод доставки по Києву з розрахунком вартості через Uklon по полю "Адреси" та додатковими полями подарунка.
 
 == Changelog ==
+
+= 1.1.3 =
+* Фікс модуля оновлення плагіну
 
 = 1.1.2 =
 * Невеликі виправлення
