@@ -3,6 +3,10 @@
 Plugin Name: Kyiv Custom Shipping Uklon
 Description: Кастомний метод доставки по Києву з розрахунком вартості через Uklon по полю "Адреси" та додатковими полями подарунка.
 Version: 1.1.0
+Tested up to: 6.7
+Requires at least: 5.2
+Requires PHP: 7.1
+WC tested up to: 9.4
 Author: ValsyDev
 */
 
@@ -31,7 +35,7 @@ require_once plugin_dir_path(__FILE__) . 'lib/plugin-update-checker/plugin-updat
 use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
 
 $myUpdateChecker = PucFactory::buildUpdateChecker(
-    'https://github.com/Heinsed/kyiv-delivery-uklon.git',
+    'https://github.com/Heinsed/kyiv-delivery-uklon',
     __FILE__,
     'kyiv-uklon-delivery'
 );
