@@ -26,16 +26,16 @@ add_filter('woocommerce_shipping_methods', function ($methods) {
 });
 
 
-require plugin_dir_path(__FILE__) . 'lib/plugin-update-checker/plugin-update-checker.php';
 
-$update_checker = Puc_v4_Factory::buildUpdateChecker(
-    'https://github.com/YOUR_USERNAME/YOUR_REPO_NAME/',
+require_once plugin_dir_path(__FILE__) . 'lib/plugin-update-checker/plugin-update-checker.php';
+use YahnisElsts\PluginUpdateChecker\v5\PucFactory;
+
+$myUpdateChecker = PucFactory::buildUpdateChecker(
+    'https://github.com/Heinsed/kyiv-delivery-uklon.git',
     __FILE__,
-    'your-plugin-slug'
+    'kyiv-uklon-delivery'
 );
 
-// Указываем ветку (например, main)
-$update_checker->setBranch('main');
+$myUpdateChecker->setBranch('master');
 
-// Указываем токен, если репозиторий приватный
-$update_checker->setAuthentication('ghp_yourGithubTokenHere');
+
