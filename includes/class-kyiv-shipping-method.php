@@ -14,6 +14,7 @@ class WC_Shipping_Kyiv_Custom extends WC_Shipping_Method {
         $this->init_settings();
 
         $this->google_maps_api_key = $this->get_option('google_maps_api_key');
+        $this->google_places_api_key = $this->get_option('google_places_api_key');
         $this->google_address_city = $this->get_option('google_address_city');
         $this->google_address_country = $this->get_option('google_address_country');
         $this->uklon_app_uid = $this->get_option('uklon_app_uid');
@@ -76,9 +77,15 @@ class WC_Shipping_Kyiv_Custom extends WC_Shipping_Method {
     public function init_form_fields() {
         $this->form_fields = [
             'google_maps_api_key' => [
-                'title'       => 'Google Maps API Key',
+                'title'       => 'Google Geocoding API Key',
                 'type'        => 'text',
                 'description' => 'Введіть ваш API ключ для Google Geocoding API.',
+                'default'     => '',
+            ],
+            'google_places_api_key' => [
+                'title'       => 'Google Places API Key',
+                'type'        => 'text',
+                'description' => 'Введіть ваш API ключ для Google Places API.',
                 'default'     => '',
             ],
             'google_address_city' => [

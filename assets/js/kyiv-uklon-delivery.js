@@ -85,13 +85,11 @@ jQuery(function ($) {
         toggleGiftFields();
     });
 
-    let addressTimeout;
-    $('form.checkout').on('input', 'input[name="kyiv_address"]', function () {
-        clearTimeout(addressTimeout);
-        addressTimeout = setTimeout(function () {
-            let val = $('input[name="kyiv_address"]').val();
+    $('form.checkout').on('change', 'input[name="kyiv_address"]', function () {
+        let val = $('input[name="kyiv_address"]').val();
 
-            $.ajax({
+
+        $.ajax({
                 url: kyivShippingData.ajax_url,
                 method: 'POST',
                 data: {
@@ -107,7 +105,72 @@ jQuery(function ($) {
                     }
                 },
 
-            });
-        }, 800);
+        });
     });
+
+
+    let suggestionTimeout;
+
+    $('form.checkout').on('input', 'input[name="kyiv_address"]', function () {
+        clearTimeout(suggestionTimeout);
+
+        suggestionTimeout = setTimeout(function () {
+            let val = $('input[name="kyiv_address"]').val();
+
+            if (val.length < 3) {
+                $('#suggestions-list').hide().empty();
+                return;
+            }
+
+            $.ajax({
+                url: kyivShippingData.ajax_url,
+                method: 'POST',
+                data: {
+                    action: 'get_address_suggestions',
+                    address: val,
+                    security: kyivShippingData.nonce_save_address,
+                },
+                success: function (response) {
+                    if (response.success) {
+                        let suggestions = response.data.suggestions;
+                        let suggestionsList = $('#suggestions-list');
+                        suggestionsList.empty();
+
+                        suggestions.forEach(function (suggestion) {
+                            suggestionsList.append('<li>' + suggestion + '</li>');
+                        });
+
+                        if (suggestions && suggestions.length > 0) {
+                            suggestionsList.show();
+                        } else {
+                            suggestionsList.hide();
+                        }
+                    }
+                },
+            });
+        }, 200);
+    });
+
+
+
+
+    $(document).on('click', function(event) {
+        const $target = $(event.target);
+        const $suggestionsList = $('#suggestions-list');
+        const $inputWrapper = $('.kyiv-address-wrapper');
+
+        if (
+            !$target.closest($suggestionsList).length &&
+            !$target.closest($inputWrapper).length
+        ) {
+            $suggestionsList.hide();
+        }
+    });
+
+    $(document).on('click', '#suggestions-list li', function(event) {
+        var selectedAddress = $(this).text().trim();
+        $('#kyiv_address').val(selectedAddress);
+        $('#suggestions-list').hide();
+    });
+
 });

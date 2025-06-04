@@ -87,3 +87,51 @@ function get_uklon_delivery_cost($client_address, $settings) {
     $estimate_body = json_decode(wp_remote_retrieve_body($estimate_response), true);
     return floatval($estimate_body['estimated_products']['car']['estimation']['cost']['recommended'] ?? 0);
 }
+
+
+function get_address_suggestions_google($address, $settings) {
+    $api_key = $settings['google_places_api_key'] ?? '';
+    $country = $settings['google_address_country'] ?? 'UA';
+    $city    = $settings['google_address_city'] ?? '';
+
+    if (!$api_key || !$address || !$city) return [];
+
+    $encoded_address = urlencode($address);
+    $url = "https://maps.googleapis.com/maps/api/place/autocomplete/json?"
+        . "input={$encoded_address}"
+        . "&types=address"
+        . "&components=country:{$country}"
+        . "&language=uk"
+        . "&key={$api_key}";
+
+    $response = wp_remote_get($url, ['timeout' => 10]);
+    if (is_wp_error($response)) return [];
+
+    $body = json_decode(wp_remote_retrieve_body($response), true);
+    if ($body['status'] !== 'OK' || empty($body['predictions'])) return [];
+
+    $suggestions = [];
+
+    foreach ($body['predictions'] as $prediction) {
+        $types = $prediction['types'] ?? [];
+
+        if (!in_array('route', $types) && !in_array('street_address', $types) && !in_array('premise', $types)) {
+            continue;
+        }
+
+        $secondary_text = $prediction['structured_formatting']['secondary_text'] ?? '';
+        if (stripos($secondary_text, $city) === false) continue;
+
+        $main_text = $prediction['structured_formatting']['main_text'] ?? '';
+        if ($main_text) {
+            $suggestions[] = $main_text;
+        }
+    }
+
+    return array_unique($suggestions);
+}
+
+
+
+
+

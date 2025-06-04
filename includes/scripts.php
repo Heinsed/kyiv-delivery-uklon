@@ -10,5 +10,6 @@ add_action('wp_enqueue_scripts', function () {
             'nonce_save_address' => wp_create_nonce('save_kyiv_address_nonce'),
             'nonce_clear_session' => wp_create_nonce('clear_kyiv_address_nonce'),
         ]);
+        wp_enqueue_style('kyiv-custom-shipping-style', plugin_dir_url(__FILE__) . '../assets/css/kyiv-uklon-delivery.css', [], '1.0');
     }
 });

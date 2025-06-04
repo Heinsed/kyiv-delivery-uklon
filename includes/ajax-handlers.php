@@ -10,12 +10,18 @@ function get_kyiv_shipping_fields_callback() {
 
     ob_start();
 
+    echo '<div class="kyiv-address-wrapper">';
+
     woocommerce_form_field('kyiv_address', [
         'type' => 'text',
         'label' => 'Адреса доставки',
         'required' => true,
         'class' => ['form-row-wide'],
     ], $checkout->get_value('kyiv_address'));
+
+    echo '<ul id="suggestions-list"></ul>';
+    echo '<p class="uklon-description">Розрахунок вартості доставки базується на тарифах Uklon Delivery.</p>';
+    echo '</div>';
 
     woocommerce_form_field('kyiv_is_gift', [
         'type' => 'checkbox',
@@ -50,6 +56,7 @@ function get_kyiv_shipping_fields_callback() {
     wp_send_json_success($fields_html);
 }
 
+
 add_action('wp_ajax_save_kyiv_address_session', 'save_kyiv_address_session');
 add_action('wp_ajax_nopriv_save_kyiv_address_session', 'save_kyiv_address_session');
 function save_kyiv_address_session() {
@@ -71,6 +78,36 @@ function save_kyiv_address_session() {
 
 add_action('wp_ajax_clear_kyiv_address_session', 'clear_kyiv_address_session');
 add_action('wp_ajax_nopriv_clear_kyiv_address_session', 'clear_kyiv_address_session');
+
+
+
+add_action('wp_ajax_get_address_suggestions', 'ajax_get_address_suggestions');
+add_action('wp_ajax_nopriv_get_address_suggestions', 'ajax_get_address_suggestions');
+
+function ajax_get_address_suggestions() {
+    check_ajax_referer('save_kyiv_address_nonce', 'security');
+
+    $address = sanitize_text_field($_POST['address'] ?? '');
+    if (!$address) wp_send_json_error(['message' => 'Empty address']);
+
+    $shipping_methods = WC()->shipping()->get_shipping_methods();
+    $kyiv_method = $shipping_methods['kyiv_custom_shipping'] ?? null;
+
+    if (!$kyiv_method || !is_object($kyiv_method)) {
+        wp_send_json_error(['message' => 'Shipping method not found']);
+    }
+
+    $settings = [
+        'google_maps_api_key'    => $kyiv_method->google_maps_api_key,
+        'google_places_api_key'  => $kyiv_method->google_places_api_key,
+        'google_address_country' => $kyiv_method->google_address_country,
+        'google_address_city' => $kyiv_method->google_address_city,
+    ];
+
+    $suggestions = get_address_suggestions_google($address, $settings);
+    wp_send_json_success(['suggestions' => $suggestions]);
+}
+
 
 function clear_kyiv_address_session() {
     check_ajax_referer('clear_kyiv_address_nonce', 'security');

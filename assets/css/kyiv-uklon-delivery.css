@@ -1,0 +1,39 @@
+.kyiv-address-wrapper {
+    position: relative;
+}
+.kyiv-address-wrapper #suggestions-list {
+    display: none;
+    padding-left: 0;
+    list-style: none;
+    border: 1px solid #ccc;
+    max-height: 150px;
+    overflow-y: auto;
+    background: #fff;
+    position: absolute;
+    width: 100%;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    border-radius: 4px;
+    top: 75px;
+    margin: 0;
+}
+.kyiv-address-wrapper #suggestions-list li {
+    padding: 8px 12px;
+    cursor: pointer;
+    font-family: "Open Sans", sans-serif;
+    font-size: 14px;
+    line-height: 22px;
+    font-weight: 300;
+}
+.kyiv-address-wrapper #suggestions-list li:hover {
+    background-color: #f0f0f0;
+}
+
+
+.kyiv-address-wrapper .uklon-description{
+    font-family: "Open Sans", sans-serif;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 300;
+    margin: 2px;
+}
